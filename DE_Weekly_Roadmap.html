@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DE Weekly Interleaved Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d14;
+    --surface: #13131f;
+    --surface2: #1a1a2e;
+    --border: #2a2a45;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --yellow: #f5c518;
+
+    --sql:       #42a5f5;
+    --sql-bg:    #0a1a2e;
+    --python:    #f9a825;
+    --python-bg: #2a200a;
+    --snow:      #29d9f5;
+    --snow-bg:   #052028;
+    --dbt:       #ff7043;
+    --dbt-bg:    #2a0f05;
+    --airflow:   #69d483;
+    --airflow-bg:#052010;
+    --docker:    #26c6da;
+    --docker-bg: #041820;
+    --terra:     #b06be8;
+    --terra-bg:  #1a0828;
+    --cloud:     #ec407a;
+    --cloud-bg:  #280510;
+    --git:       #90a4ae;
+    --git-bg:    #101820;
+    --kafka:     #ffa726;
+    --kafka-bg:  #281a04;
+    --project:   #a5d6a7;
+    --project-bg:#041808;
+
+    --m1: #42a5f5;
+    --m2: #29d9f5;
+    --m3: #ff7043;
+    --m4: #69d483;
+    --m5: #b06be8;
+    --m6: #ec407a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    padding: 60px 40px 50px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(66,165,245,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; right: -60px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(176,107,232,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--yellow);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e8e8f0 0%, #a0a0c8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 700px;
+    line-height: 1.7;
+  }
+  .subtitle em { color: var(--yellow); font-style: normal; }
+
+  /* ── SCOPE LEGEND ── */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    user-select: none;
+  }
+  .legend-item:hover { transform: translateY(-1px); }
+  .legend-item.dimmed { opacity: 0.25; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── TABS (month filter) ── */
+  .month-tabs {
+    display: flex; gap: 0;
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 22px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    color: var(--muted);
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); }
+
+  /* ── MAIN CONTENT ── */
+  main { padding: 40px; max-width: 1400px; margin: 0 auto; }
+
+  /* ── MONTH SECTION ── */
+  .month-section { margin-bottom: 56px; }
+  .month-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .month-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 6px 14px;
+    border-radius: 3px;
+  }
+  .month-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  /* ── WEEK GRID ── */
+  .weeks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
+    gap: 16px;
+  }
+
+  /* ── WEEK CARD ── */
+  .week-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .week-card:hover {
+    border-color: #3a3a5a;
+    transform: translateY(-2px);
+  }
+  .week-card-header {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .week-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--yellow);
+    line-height: 1;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .week-num span {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 2px;
+    font-weight: 400;
+  }
+  .week-theme {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .week-hours-total {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .week-hours-total strong { color: var(--yellow); display: block; font-size: 16px; }
+
+  /* ── TASK ROWS ── */
+  .task-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    align-items: start;
+    gap: 12px;
+    padding: 10px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    transition: background 0.15s;
+  }
+  .task-row:last-child { border-bottom: none; }
+  .task-row:hover { background: rgba(255,255,255,0.025); }
+  .task-row.filtered-out { display: none; }
+
+  .scope-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid;
+    white-space: nowrap;
+    align-self: start;
+    margin-top: 1px;
+  }
+
+  .task-text {
+    font-size: 12px;
+    line-height: 1.55;
+    color: #c8c8e0;
+  }
+  .task-resource {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+    align-self: start;
+    margin-top: 3px;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .task-hrs {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--yellow);
+    white-space: nowrap;
+  }
+
+  /* ── SCOPE TRACKER TABLE ── */
+  .tracker-section {
+    margin-top: 64px;
+    margin-bottom: 64px;
+  }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--yellow);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .tracker-wrap { overflow-x: auto; }
+  .tracker-table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 900px;
+  }
+  .tracker-table th, .tracker-table td {
+    border: 1px solid var(--border);
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+  }
+  .tracker-table th {
+    padding: 8px 6px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    background: var(--surface2);
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .tracker-table th.scope-col { text-align: left; padding-left: 14px; }
+  .tracker-table td { padding: 6px 4px; font-size: 11px; }
+  .tracker-table td.scope-name {
+    text-align: left;
+    padding: 8px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .tracker-table td.active-cell { font-size: 13px; }
+
+  /* ── STRATEGY BOX ── */
+  .strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .strategy-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  .strategy-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--yellow);
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  .strategy-card p, .strategy-card li {
+    font-size: 12px;
+    line-height: 1.7;
+    color: #a0a0c0;
+  }
+  .strategy-card ul { padding-left: 18px; }
+  .strategy-card li { margin-bottom: 4px; }
+
+  .day-schedule {
+    display: flex; flex-direction: column; gap: 6px; margin-top: 8px;
+  }
+  .day-row {
+    display: flex; gap: 10px; align-items: baseline;
+  }
+  .day-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--yellow);
+    width: 80px;
+    flex-shrink: 0;
+    letter-spacing: 1px;
+  }
+  .day-task { font-size: 12px; color: #a0a0c0; }
+
+  /* ── PROGRESS TRACKER ── */
+  .progress-section { margin-top: 64px; }
+  .progress-controls {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 20px; align-items: center;
+  }
+  .prog-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .prog-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+  .progress-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+  .progress-count strong { color: var(--airflow); }
+
+  .prog-table { width: 100%; border-collapse: collapse; }
+  .prog-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 10px 14px;
+    text-align: left;
+    background: var(--surface2);
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .prog-table td {
+    padding: 10px 14px;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+  }
+  .prog-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .status-select {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+  }
+  .status-select.done { border-color: var(--airflow); color: var(--airflow); }
+  .status-select.progress { border-color: var(--yellow); color: var(--yellow); }
+  .status-select.skipped { border-color: var(--muted); color: var(--muted); }
+
+  .notes-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    width: 100%;
+    padding: 2px 0;
+    outline: none;
+    font-family: 'Space Mono', monospace;
+  }
+  .notes-input:focus { border-color: var(--yellow); color: var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 40px;
+    border-top: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .month-section { animation: fadeUp 0.4s ease both; }
+  .month-section:nth-child(2) { animation-delay: 0.05s; }
+  .month-section:nth-child(3) { animation-delay: 0.10s; }
+  .month-section:nth-child(4) { animation-delay: 0.15s; }
+  .month-section:nth-child(5) { animation-delay: 0.20s; }
+  .month-section:nth-child(6) { animation-delay: 0.25s; }
+
+  @media (max-width: 700px) {
+    header, main { padding: 24px 20px; }
+    .legend, .month-tabs { padding: 16px 20px; }
+    .weeks-grid { grid-template-columns: 1fr; }
+    .task-row { grid-template-columns: 80px 1fr; }
+    .task-resource { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Data Engineering · 24-Week Plan</div>
+  <h1>Interleaved<br>Weekly Roadmap</h1>
+  <p class="subtitle">
+    Every week touches <em>multiple scopes</em> so no skill goes cold —
+    rotate Python · SQL · Snowflake · dbt · Airflow · Docker · Terraform continuously.
+    <em>Interleaved practice</em> beats blocked learning every time.
+  </p>
+</header>
+
+<!-- LEGEND -->
+<div class="legend" id="legend">
+  <div class="legend-item active" data-scope="SQL"      style="color:var(--sql);border-color:var(--sql);background:var(--sql-bg)"><div class="legend-dot" style="background:var(--sql)"></div>SQL</div>
+  <div class="legend-item active" data-scope="Python"   style="color:var(--python);border-color:var(--python);background:var(--python-bg)"><div class="legend-dot" style="background:var(--python)"></div>Python</div>
+  <div class="legend-item active" data-scope="Snowflake"style="color:var(--snow);border-color:var(--snow);background:var(--snow-bg)"><div class="legend-dot" style="background:var(--snow)"></div>Snowflake</div>
+  <div class="legend-item active" data-scope="dbt"      style="color:var(--dbt);border-color:var(--dbt);background:var(--dbt-bg)"><div class="legend-dot" style="background:var(--dbt)"></div>dbt</div>
+  <div class="legend-item active" data-scope="Airflow"  style="color:var(--airflow);border-color:var(--airflow);background:var(--airflow-bg)"><div class="legend-dot" style="background:var(--airflow)"></div>Airflow</div>
+  <div class="legend-item active" data-scope="Docker"   style="color:var(--docker);border-color:var(--docker);background:var(--docker-bg)"><div class="legend-dot" style="background:var(--docker)"></div>Docker</div>
+  <div class="legend-item active" data-scope="Terraform"style="color:var(--terra);border-color:var(--terra);background:var(--terra-bg)"><div class="legend-dot" style="background:var(--terra)"></div>Terraform</div>
+  <div class="legend-item active" data-scope="Cloud/AWS"style="color:var(--cloud);border-color:var(--cloud);background:var(--cloud-bg)"><div class="legend-dot" style="background:var(--cloud)"></div>Cloud/AWS</div>
+  <div class="legend-item active" data-scope="Git/CI-CD"style="color:var(--git);border-color:var(--git);background:var(--git-bg)"><div class="legend-dot" style="background:var(--git)"></div>Git/CI-CD</div>
+  <div class="legend-item active" data-scope="Kafka"    style="color:var(--kafka);border-color:var(--kafka);background:var(--kafka-bg)"><div class="legend-dot" style="background:var(--kafka)"></div>Kafka</div>
+</div>
+
+<!-- MONTH TABS -->
+<div class="month-tabs" id="monthTabs">
+  <div class="tab active" data-month="all">All Months</div>
+  <div class="tab" data-month="1" style="border-bottom-color:transparent" id="tab1">Month 1</div>
+  <div class="tab" data-month="2" id="tab2">Month 2</div>
+  <div class="tab" data-month="3" id="tab3">Month 3</div>
+  <div class="tab" data-month="4" id="tab4">Month 4</div>
+  <div class="tab" data-month="5" id="tab5">Month 5</div>
+  <div class="tab" data-month="6" id="tab6">Month 6</div>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     ROADMAP WEEKS
+══════════════════════════════════════════════════════════════════ -->
+<div id="roadmap"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SCOPE TRACKER
+══════════════════════════════════════════════════════════════════ -->
+<div class="tracker-section">
+  <div class="section-label">// Scope Tracker</div>
+  <div class="tracker-wrap">
+    <table class="tracker-table" id="trackerTable"></table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     STRATEGY
+══════════════════════════════════════════════════════════════════ -->
+<div class="tracker-section">
+  <div class="section-label">// Learning Strategy</div>
+  <div class="strategy-grid">
+    <div class="strategy-card">
+      <h3>Why Interleaved?</h3>
+      <p>Blocked practice (Python for a month, then SQL for a month) feels efficient but produces fragile memory. Interleaved practice — touching all scopes every week — forces your brain to retrieve and reconnect, which is exactly what builds durable skill.</p>
+    </div>
+    <div class="strategy-card">
+      <h3>Suggested Daily Rhythm</h3>
+      <div class="day-schedule">
+        <div class="day-row"><span class="day-name">MON</span><span class="day-task">SQL drill — 15–30 min + weekly deep task</span></div>
+        <div class="day-row"><span class="day-name">TUE</span><span class="day-task">Python — scripting, pipeline, or library</span></div>
+        <div class="day-row"><span class="day-name">WED</span><span class="day-task">Deep focus — dbt / Airflow / Snowflake</span></div>
+        <div class="day-row"><span class="day-name">THU</span><span class="day-task">DevOps — Docker / Terraform / CI-CD</span></div>
+        <div class="day-row"><span class="day-name">FRI</span><span class="day-task">Project work — integrate the week</span></div>
+        <div class="day-row"><span class="day-name">WEEKEND</span><span class="day-task">LeetCode SQL, blog, or rest — no grinding</span></div>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <h3>On Hours</h3>
+      <p>Each week totals ~20–28 hours. If you have only 10 hrs/week, halve the tasks and run the roadmap over 48 weeks. The structure matters more than the speed. Consistency beats intensity.</p>
+    </div>
+    <div class="strategy-card">
+      <h3>Weekly Handoff Note</h3>
+      <p>Start each new Claude chat with a 2-sentence brief:<br><br>
+      <em style="color:var(--yellow);font-size:11px">"Week 5. Finished Week 4 — SQL CTEs clicked, struggled with docker-compose networking. Starting Snowflake star schema today."</em><br><br>
+      That's enough context for Claude to pick up meaningfully.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PROGRESS TRACKER
+══════════════════════════════════════════════════════════════════ -->
+<div class="progress-section">
+  <div class="section-label">// Progress Tracker</div>
+  <div class="progress-controls">
+    <button class="prog-btn" onclick="filterProgress('all')">ALL</button>
+    <button class="prog-btn" onclick="filterProgress('Not Started')">NOT STARTED</button>
+    <button class="prog-btn" onclick="filterProgress('In Progress')">IN PROGRESS</button>
+    <button class="prog-btn" onclick="filterProgress('Done')">DONE</button>
+    <button class="prog-btn" onclick="exportProgress()">EXPORT JSON</button>
+    <div class="progress-count" id="progressCount"></div>
+  </div>
+  <table class="prog-table">
+    <thead>
+      <tr>
+        <th>WEEK</th>
+        <th>SCOPE</th>
+        <th>TASK</th>
+        <th>STATUS</th>
+        <th>NOTES / LINK</th>
+      </tr>
+    </thead>
+    <tbody id="progressBody"></tbody>
+  </table>
+</div>
+
+</main>
+
+<footer>DATA ENGINEERING ROADMAP · 24 WEEKS · INTERLEAVED LEARNING</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════
+const MONTHS = [
+  { num:1, color:'#42a5f5', title:'Foundations', sub:'SQL · Python · Bash · Git · Docker' },
+  { num:2, color:'#29d9f5', title:'Data Warehouse', sub:'Snowflake · Star Schema · Docker' },
+  { num:3, color:'#ff7043', title:'Transformation', sub:'dbt Medallion Pipeline · CI/CD' },
+  { num:4, color:'#69d483', title:'Orchestration', sub:'Airflow · Terraform · Cloud' },
+  { num:5, color:'#b06be8', title:'Observability', sub:'BI · Data Quality · Kubernetes' },
+  { num:6, color:'#ec407a', title:'Capstone', sub:'Full-Stack Portfolio Launch' },
+];
+
+const SCOPE_META = {
+  'SQL':       { color:'#42a5f5', bg:'#0a1a2e' },
+  'Python':    { color:'#f9a825', bg:'#2a200a' },
+  'Snowflake': { color:'#29d9f5', bg:'#052028' },
+  'dbt':       { color:'#ff7043', bg:'#2a0f05' },
+  'Airflow':   { color:'#69d483', bg:'#052010' },
+  'Docker':    { color:'#26c6da', bg:'#041820' },
+  'Terraform': { color:'#b06be8', bg:'#1a0828' },
+  'Cloud/AWS': { color:'#ec407a', bg:'#280510' },
+  'Git/CI-CD': { color:'#90a4ae', bg:'#101820' },
+  'Kafka':     { color:'#ffa726', bg:'#281a04' },
+};
+
+const WEEKS = [
+  {w:1,m:1,theme:"Foundations: Setup & First Queries",tasks:[
+    {scope:"SQL",      task:"Install PostgreSQL + DBeaver; complete SQLZoo Basics (SELECT, WHERE, JOINs)",hrs:5,res:"sqlzoo.net"},
+    {scope:"Python",   task:"Install Python 3.11 + Jupyter; Kaggle Pandas Part 1 (DataFrames, indexing)",hrs:4,res:"kaggle.com/learn/pandas"},
+    {scope:"Git/CI-CD",task:"Create GitHub account; git init, add, commit, push first repo",hrs:2,res:"git-scm.com"},
+    {scope:"Docker",   task:"Install Docker Desktop; run 'hello-world'; understand image vs container",hrs:2,res:"docs.docker.com"},
+  ]},
+  {w:2,m:1,theme:"SQL Deep Dive & Python Data Manipulation",tasks:[
+    {scope:"SQL",      task:"pgexercises.com: GROUP BY, aggregations, HAVING, subqueries (10 drills)",hrs:6,res:"pgexercises.com"},
+    {scope:"Python",   task:"Kaggle Pandas Part 2: merge, groupby, apply, read_csv → clean NYC Taxi slice",hrs:4,res:"kaggle.com/learn/pandas"},
+    {scope:"Git/CI-CD",task:"Branching & pull requests; write a useful README with markdown badges",hrs:2,res:"github.com"},
+    {scope:"Docker",   task:"Write your first Dockerfile; build + run a Python script in a container",hrs:2,res:"docs.docker.com"},
+  ]},
+  {w:3,m:1,theme:"Window Functions & Bash Automation",tasks:[
+    {scope:"SQL",      task:"Window functions: ROW_NUMBER, RANK, LAG/LEAD, NTILE on NYC Taxi data",hrs:5,res:"pgexercises.com"},
+    {scope:"Python",   task:"File I/O + Pandas: read multiple CSVs, concat, reshape, write cleaned output",hrs:4,res:"Python docs"},
+    {scope:"Git/CI-CD",task:"Git hooks intro; .gitignore best practices; multi-file project structure",hrs:1,res:"git-scm.com"},
+    {scope:"Snowflake",task:"Create free Snowflake trial account; explore UI, virtual warehouses, worksheets",hrs:2,res:"quickstarts.snowflake.com"},
+    {scope:"Docker",   task:"docker-compose basics: run Postgres + pgAdmin together with one YAML file",hrs:3,res:"docs.docker.com/compose"},
+  ]},
+  {w:4,m:1,theme:"CTEs, Python APIs & Project M1",tasks:[
+    {scope:"SQL",      task:"CTEs, recursive queries, query optimisation (EXPLAIN, indexes) on NYC Taxi",hrs:5,res:"pgexercises.com"},
+    {scope:"Python",   task:"Write Bash script: curl download → unzip → psql bulk load; schedule with cron",hrs:4,res:"linuxcommand.org"},
+    {scope:"Git/CI-CD",task:"Push M1 project: /sql /python /bash folders + README with 3 insights",hrs:2,res:"github.com"},
+    {scope:"Snowflake",task:"Snowflake: load a CSV via stage; run first SELECT; compare with Postgres",hrs:2,res:"quickstarts.snowflake.com"},
+  ]},
+  {w:5,m:2,theme:"Star Schema Design & Snowflake Loading",tasks:[
+    {scope:"SQL",      task:"Analytical SQL: self-joins, PIVOT, date functions on Olist e-commerce data",hrs:5,res:"Mode Analytics SQL Tutorial"},
+    {scope:"Python",   task:"Python API calls: requests library; fetch JSON; normalize with pd.json_normalize",hrs:3,res:"Real Python"},
+    {scope:"Snowflake",task:"Kimball dimensional modelling: fact_orders, dim_customers, dim_products, dim_dates",hrs:5,res:"kimballgroup.com"},
+    {scope:"Docker",   task:"Multi-stage Docker builds; reduce image size; .dockerignore best practices",hrs:2,res:"docs.docker.com"},
+  ]},
+  {w:6,m:2,theme:"Warehouse Querying & Docker Compose",tasks:[
+    {scope:"SQL",      task:"10 analytical queries on Olist star schema: revenue trends, top customers, churn",hrs:5,res:"pgexercises.com"},
+    {scope:"Python",   task:"Python data pipeline: extract → transform with Pandas → load to Snowflake via connector",hrs:4,res:"docs.snowflake.com"},
+    {scope:"Snowflake",task:"Snowflake: stages, file formats, COPY INTO, virtual warehouse sizing",hrs:4,res:"Snowflake University"},
+    {scope:"Docker",   task:"docker-compose with Postgres + ingestion service; env vars + secrets management",hrs:3,res:"docs.docker.com/compose"},
+  ]},
+  {w:7,m:2,theme:"OLAP Concepts & Snowflake Optimisation",tasks:[
+    {scope:"SQL",      task:"Query optimisation deep-dive: clustering keys, partitioning, materialized views",hrs:4,res:"Snowflake docs"},
+    {scope:"Python",   task:"Python OOP for pipelines: classes for extractor, transformer, loader pattern",hrs:3,res:"Real Python OOP"},
+    {scope:"Snowflake",task:"OLAP concepts: clustering, micro-partitions, query profiles, credit usage tuning",hrs:5,res:"Snowflake University"},
+    {scope:"Docker",   task:"Push Dockerised ingestion image to Docker Hub; tag versions properly",hrs:2,res:"hub.docker.com"},
+  ]},
+  {w:8,m:2,theme:"Project M2 Complete & dbt Intro",tasks:[
+    {scope:"SQL",      task:"Write schema diagram in dbdiagram.io; document all tables and relationships",hrs:2,res:"dbdiagram.io"},
+    {scope:"Python",   task:"Finish M2 Python ingestion script; add logging and error handling",hrs:3,res:"Python docs"},
+    {scope:"Snowflake",task:"Load full Olist dataset into Snowflake star schema; validate row counts",hrs:3,res:"Snowflake quickstarts"},
+    {scope:"Docker",   task:"Push M2 project: Dockerfile, docker-compose.yml, DDL scripts, Docker Hub link",hrs:2,res:"github.com"},
+    {scope:"dbt",      task:"Install dbt Core; complete dbt Learn Fundamentals free course (first 2 modules)",hrs:4,res:"courses.getdbt.com"},
+  ]},
+  {w:9,m:3,theme:"dbt Bronze Layer & Git Workflows",tasks:[
+    {scope:"SQL",      task:"SQL in dbt: understand how dbt compiles models to SQL; inspect generated code",hrs:3,res:"docs.getdbt.com"},
+    {scope:"Python",   task:"Python virtual environments: venv, pip freeze, requirements.txt for reproducibility",hrs:2,res:"Python docs"},
+    {scope:"dbt",      task:"dbt project setup; connect to Snowflake; build Bronze (raw source) models",hrs:5,res:"docs.getdbt.com"},
+    {scope:"Git/CI-CD",task:"GitHub Actions intro: create first workflow YAML; understand triggers and jobs",hrs:3,res:"docs.github.com/actions"},
+    {scope:"Docker",   task:"Run dbt inside Docker container; write Dockerfile for dbt project",hrs:2,res:"docs.docker.com"},
+  ]},
+  {w:10,m:3,theme:"dbt Silver Layer & Testing",tasks:[
+    {scope:"SQL",      task:"dbt SQL patterns: ref(), source(), Jinja macros, custom tests",hrs:4,res:"docs.getdbt.com"},
+    {scope:"Snowflake",task:"Snowflake: time travel, cloning, MERGE statement for incremental loads",hrs:3,res:"Snowflake docs"},
+    {scope:"dbt",      task:"Build Silver layer: cleaned, typed, deduplicated staging models with schema tests",hrs:5,res:"docs.getdbt.com"},
+    {scope:"Git/CI-CD",task:"GitHub Actions: run dbt test on every pull request; add status badge to README",hrs:3,res:"docs.github.com/actions"},
+  ]},
+  {w:11,m:3,theme:"dbt Gold Layer & Medallion Architecture",tasks:[
+    {scope:"SQL",      task:"Advanced dbt SQL: incremental models, snapshots (SCD Type 2) in Snowflake",hrs:4,res:"docs.getdbt.com"},
+    {scope:"Snowflake",task:"Snowflake streams and tasks: basic CDC awareness for future streaming use",hrs:3,res:"Snowflake docs"},
+    {scope:"dbt",      task:"Build Gold layer: business-ready fact + dimension models; materialisation strategies",hrs:5,res:"docs.getdbt.com"},
+    {scope:"Docker",   task:"docker-compose for CI: dbt + Postgres locally; mirror production in dev",hrs:2,res:"docs.docker.com"},
+  ]},
+  {w:12,m:3,theme:"dbt Docs, CI & Project M3",tasks:[
+    {scope:"SQL",      task:"Write dbt data contracts: column descriptions, accepted_values tests on every model",hrs:3,res:"docs.getdbt.com"},
+    {scope:"Python",   task:"Python scripting: automate dbt run + test + generate docs in one script",hrs:2,res:"Python docs"},
+    {scope:"dbt",      task:"Generate + publish dbt docs to GitHub Pages; add source freshness tests",hrs:4,res:"docs.getdbt.com"},
+    {scope:"Git/CI-CD",task:"Polish GitHub Actions CI: lint SQL, run tests, publish docs on merge to main",hrs:3,res:"docs.github.com/actions"},
+    {scope:"Snowflake",task:"Snowflake: review query history and cost; set up resource monitors",hrs:2,res:"Snowflake docs"},
+  ]},
+  {w:13,m:4,theme:"Airflow Fundamentals & First DAG",tasks:[
+    {scope:"SQL",      task:"SQL for orchestration: understand idempotency, upsert patterns for pipeline loads",hrs:3,res:"Mode Analytics"},
+    {scope:"Python",   task:"Python for Airflow: PythonOperator, callable functions, XCom passing between tasks",hrs:4,res:"airflow.apache.org"},
+    {scope:"Airflow",  task:"Set up Airflow locally with Docker Compose; write hello-world DAG with 3 tasks",hrs:5,res:"airflow.apache.org/docs"},
+    {scope:"Docker",   task:"Deep-dive docker-compose for Airflow: webserver, scheduler, worker, postgres, redis",hrs:3,res:"astronomer.io/learn"},
+  ]},
+  {w:14,m:4,theme:"ELT Ingestion & Terraform Basics",tasks:[
+    {scope:"SQL",      task:"Write idempotent MERGE / INSERT OVERWRITE patterns in Snowflake for pipeline loads",hrs:3,res:"Snowflake docs"},
+    {scope:"Python",   task:"Build a Python API-to-storage ingestion function; parameterise with Airflow variables",hrs:4,res:"airflow.apache.org"},
+    {scope:"Airflow",  task:"Airflow sensors, hooks, connections; build DAG: API fetch → save to cloud storage",hrs:4,res:"astronomer.io/learn"},
+    {scope:"Terraform",task:"HashiCorp tutorial: HCL syntax, providers, resources, variables, outputs, state",hrs:4,res:"developer.hashicorp.com"},
+  ]},
+  {w:15,m:4,theme:"Terraform Cloud Infra & Airflow on Cloud",tasks:[
+    {scope:"SQL",      task:"Snowflake SQL: external stages on S3/GCS; COPY INTO from cloud storage bucket",hrs:3,res:"Snowflake docs"},
+    {scope:"Python",   task:"Python logging best practices; structlog for pipeline observability",hrs:2,res:"Real Python"},
+    {scope:"Airflow",  task:"Airflow task dependencies, branching, callbacks; add Slack failure alert",hrs:4,res:"astronomer.io/learn"},
+    {scope:"Terraform",task:"Provision: GCS/S3 bucket + Snowflake DB + compute instance with Terraform",hrs:5,res:"developer.hashicorp.com"},
+    {scope:"Cloud/AWS",task:"GCP/AWS fundamentals: IAM, service accounts, roles, storage, compute basics",hrs:3,res:"GCP / AWS free tier"},
+  ]},
+  {w:16,m:4,theme:"Full ELT Pipeline & Project M4",tasks:[
+    {scope:"SQL",      task:"End-to-end SQL review: trace a row from raw API JSON → warehouse Gold table",hrs:2,res:"docs.getdbt.com"},
+    {scope:"Python",   task:"Python pipeline packaging: setup.py or pyproject.toml; import as a module in Airflow",hrs:3,res:"Python packaging docs"},
+    {scope:"Airflow",  task:"Build complete ELT DAG: API → cloud storage → dbt run → dbt test → warehouse",hrs:5,res:"astronomer.io/learn"},
+    {scope:"Terraform",task:"Write destroy + recreate runbook; state management; remote state in GCS/S3",hrs:3,res:"developer.hashicorp.com"},
+    {scope:"Cloud/AWS",task:"Deploy Airflow on cloud compute in Docker; set up IAM for secure access",hrs:3,res:"GCP / AWS docs"},
+  ]},
+  {w:17,m:5,theme:"BI Dashboards & Data Quality Intro",tasks:[
+    {scope:"SQL",      task:"Looker Studio: connect Gold dbt model; write calculated fields using SQL",hrs:3,res:"lookerstudio.google.com"},
+    {scope:"Python",   task:"Great Expectations: install GX; create first Expectation Suite on a Pandas DataFrame",hrs:4,res:"greatexpectations.io"},
+    {scope:"Snowflake",task:"Snowflake: connect Looker Studio as data source; test query performance",hrs:2,res:"Snowflake docs"},
+    {scope:"dbt",      task:"dbt source freshness: configure thresholds; integrate into CI pipeline",hrs:3,res:"docs.getdbt.com"},
+    {scope:"Airflow",  task:"Airflow: add GX checkpoint task to ELT DAG; fail pipeline on data quality breach",hrs:3,res:"astronomer.io/learn"},
+  ]},
+  {w:18,m:5,theme:"Dashboard Polish & Kubernetes Concepts",tasks:[
+    {scope:"SQL",      task:"Dashboard SQL: optimise Gold queries for BI speed; add aggregated reporting views",hrs:3,res:"Snowflake docs"},
+    {scope:"Python",   task:"Great Expectations: add suite for warehouse tables; generate data docs HTML report",hrs:4,res:"greatexpectations.io"},
+    {scope:"dbt",      task:"dbt: add model-level tags and meta; build dbt exposures for dashboard lineage",hrs:3,res:"docs.getdbt.com"},
+    {scope:"Docker",   task:"Kubernetes concepts: pods, deployments, services, namespaces vs Docker Compose",hrs:3,res:"kubernetes.io/docs"},
+    {scope:"Cloud/AWS",task:"GCP/AWS: set up billing alerts; review infra costs; right-size compute",hrs:2,res:"GCP / AWS console"},
+  ]},
+  {w:19,m:5,theme:"Kubernetes Local Setup & Airflow on K8s",tasks:[
+    {scope:"SQL",      task:"Explain batch loads vs streaming ingestion differences for a given use case",hrs:2,res:"Self-study + blogs"},
+    {scope:"Python",   task:"Python: write a health-check script that pings pipeline endpoints and sends alerts",hrs:3,res:"Python docs"},
+    {scope:"Airflow",  task:"Airflow KubernetesExecutor concepts; understand why K8s helps at scale",hrs:3,res:"airflow.apache.org"},
+    {scope:"Docker",   task:"Install Minikube; kubectl basics: apply, get, logs, exec, describe, port-forward",hrs:4,res:"minikube.sigs.k8s.io"},
+    {scope:"Terraform",task:"Terraform: provision a GKE/EKS node pool or extend current infra for K8s",hrs:3,res:"developer.hashicorp.com"},
+  ]},
+  {w:20,m:5,theme:"K8s Deploy & Project M5",tasks:[
+    {scope:"SQL",      task:"Final dashboard SQL: add pipeline health page (row counts, freshness, quality scores)",hrs:2,res:"Looker Studio docs"},
+    {scope:"Python",   task:"Python: write a script to export GX data docs and push to S3/GCS automatically",hrs:3,res:"Python docs"},
+    {scope:"Airflow",  task:"Deploy Airflow on Minikube using official Helm chart; verify DAGs run correctly",hrs:5,res:"airflow.apache.org/helm"},
+    {scope:"Docker",   task:"Write Docker vs Kubernetes comparison doc; understand when to use which",hrs:2,res:"kubernetes.io/docs"},
+    {scope:"dbt",      task:"Push M5 project: dashboard screenshots, GX suite, K8s manifests, dbt freshness config",hrs:2,res:"github.com"},
+  ]},
+  {w:21,m:6,theme:"Capstone Planning & Kafka Awareness",tasks:[
+    {scope:"SQL",      task:"Review all SQL patterns: window functions, CTEs, optimisation — do 5 LeetCode SQL Qs",hrs:4,res:"leetcode.com/database"},
+    {scope:"Python",   task:"Python review: write a reusable pipeline base class; add type hints throughout",hrs:3,res:"Python docs"},
+    {scope:"Kafka",    task:"Kafka concepts: topics, partitions, producers, consumers, consumer groups (theory)",hrs:3,res:"kafka.apache.org/intro"},
+    {scope:"Airflow",  task:"Capstone: design DAG architecture; draw task dependency graph before coding",hrs:2,res:"airflow.apache.org"},
+    {scope:"Terraform",task:"Capstone: write Terraform plan for all required infra; run terraform plan first",hrs:3,res:"developer.hashicorp.com"},
+  ]},
+  {w:22,m:6,theme:"Capstone Build: Ingestion → Warehouse",tasks:[
+    {scope:"SQL",      task:"Capstone DDL: create Snowflake schemas; write MERGE procedures for idempotent loads",hrs:4,res:"Snowflake docs"},
+    {scope:"Python",   task:"Capstone ingestion: write Python extractor for chosen dataset; unit test with pytest",hrs:5,res:"pytest docs"},
+    {scope:"Snowflake",task:"Capstone: design and build Bronze→Silver→Gold in Snowflake; validate with row counts",hrs:4,res:"Snowflake docs"},
+    {scope:"Airflow",  task:"Capstone DAG: build and test ingestion → load → dbt run task chain",hrs:4,res:"airflow.apache.org"},
+  ]},
+  {w:23,m:6,theme:"Capstone: dbt, CI/CD & Quality",tasks:[
+    {scope:"SQL",      task:"Capstone dbt SQL: write optimised incremental models; add all schema tests + docs",hrs:3,res:"docs.getdbt.com"},
+    {scope:"Python",   task:"Capstone GX: create full Expectation Suite for capstone dataset; add to DAG",hrs:3,res:"greatexpectations.io"},
+    {scope:"dbt",      task:"Capstone: build full Bronze/Silver/Gold dbt project; publish docs on GitHub Pages",hrs:5,res:"docs.getdbt.com"},
+    {scope:"Git/CI-CD",task:"Capstone CI: GitHub Actions runs dbt test + GX on every PR to main",hrs:3,res:"docs.github.com/actions"},
+    {scope:"Terraform",task:"Apply and validate all Terraform infra; test full destroy + recreate cycle",hrs:3,res:"developer.hashicorp.com"},
+  ]},
+  {w:24,m:6,theme:"Capstone Launch & Portfolio",tasks:[
+    {scope:"SQL",      task:"Final LeetCode SQL session: 5 medium + 2 hard problems; document solutions",hrs:3,res:"leetcode.com/database"},
+    {scope:"Python",   task:"Polish all Python code: docstrings, type hints, black formatter, flake8 lint",hrs:2,res:"Python docs"},
+    {scope:"Snowflake",task:"Cost analysis: document what running this pipeline costs per month on Snowflake",hrs:2,res:"Snowflake account usage"},
+    {scope:"dbt",      task:"Capstone dashboard: build final Looker dashboard on Gold models; share link",hrs:3,res:"lookerstudio.google.com"},
+    {scope:"Git/CI-CD",task:"Polish README, write case_study.md, architecture diagram, LinkedIn launch post",hrs:4,res:"github.com"},
+    {scope:"Cloud/AWS",task:"Apply to 3 Upwork DE gigs + 5 LinkedIn DE roles; study Terraform Associate cert",hrs:3,res:"upwork.com / linkedin.com"},
+  ]},
+];
+
+const SCOPE_ORDER = ['SQL','Python','Snowflake','dbt','Airflow','Docker','Terraform','Cloud/AWS','Git/CI-CD','Kafka'];
+
+// ══════════════════════════════════════════════════════════════════
+// RENDER ROADMAP
+// ══════════════════════════════════════════════════════════════════
+function scopeStyle(scope) {
+  const m = SCOPE_META[scope] || {color:'#fff',bg:'#111'};
+  return `color:${m.color};background:${m.bg};border-color:${m.color}`;
+}
+
+function renderRoadmap() {
+  const container = document.getElementById('roadmap');
+  let html = '';
+  for (const mo of MONTHS) {
+    const weeksInMonth = WEEKS.filter(w => w.m === mo.num);
+    const totalHrs = weeksInMonth.reduce((s,w) => s + w.tasks.reduce((ts,t) => ts+t.hrs, 0), 0);
+    html += `<div class="month-section" data-month="${mo.num}">
+      <div class="month-header">
+        <div class="month-badge" style="background:${mo.color}22;color:${mo.color};border:1px solid ${mo.color}44">
+          MONTH ${mo.num}
+        </div>
+        <div>
+          <div class="month-title">${mo.title}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">${mo.sub}</div>
+        </div>
+        <div style="margin-left:auto;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-align:right">
+          <strong style="color:${mo.color};font-size:18px;display:block">${totalHrs}h</strong>
+          total
+        </div>
+      </div>
+      <div class="weeks-grid">`;
+    for (const wk of weeksInMonth) {
+      const wkHrs = wk.tasks.reduce((s,t) => s+t.hrs, 0);
+      html += `<div class="week-card" data-week="${wk.w}">
+        <div class="week-card-header">
+          <div class="week-num"><span>WEEK</span>${wk.w}</div>
+          <div class="week-theme">${wk.theme}</div>
+          <div class="week-hours-total"><strong>${wkHrs}</strong>hrs</div>
+        </div>`;
+      for (const t of wk.tasks) {
+        html += `<div class="task-row" data-scope="${t.scope}">
+          <div class="scope-tag" style="${scopeStyle(t.scope)}">${t.scope}</div>
+          <div class="task-text">${t.task}</div>
+          <div style="text-align:right">
+            <div class="task-hrs">${t.hrs}h</div>
+            <div class="task-resource">${t.res}</div>
+          </div>
+        </div>`;
+      }
+      html += `</div>`;
+    }
+    html += `</div></div>`;
+  }
+  container.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RENDER TRACKER TABLE
+// ══════════════════════════════════════════════════════════════════
+function renderTracker() {
+  const t = document.getElementById('trackerTable');
+  let html = '<thead><tr><th class="scope-col">SCOPE</th>';
+  for (let w = 1; w <= 24; w++) {
+    const m = Math.ceil(w/4);
+    const mColors = {1:'#42a5f5',2:'#29d9f5',3:'#ff7043',4:'#69d483',5:'#b06be8',6:'#ec407a'};
+    html += `<th style="color:${mColors[m]}">W${w}</th>`;
+  }
+  html += '</tr></thead><tbody>';
+  for (const scope of SCOPE_ORDER) {
+    const m = SCOPE_META[scope];
+    html += `<tr><td class="scope-name" style="color:${m.color};background:${m.bg}">${scope}</td>`;
+    for (let w = 1; w <= 24; w++) {
+      const wkData = WEEKS.find(x => x.w === w);
+      const has = wkData && wkData.tasks.some(t => t.scope === scope);
+      html += `<td class="${has?'active-cell':''}" style="background:${has?m.bg:'var(--bg)'}">
+        ${has ? `<span style="color:${m.color}">✦</span>` : ''}
+      </td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</tbody>';
+  t.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RENDER PROGRESS TRACKER
+// ══════════════════════════════════════════════════════════════════
+const progressData = {};
+
+function renderProgress() {
+  const tbody = document.getElementById('progressBody');
+  let html = '';
+  let lastMonth = 0;
+  const mColors = {1:'#42a5f5',2:'#29d9f5',3:'#ff7043',4:'#69d483',5:'#b06be8',6:'#ec407a'};
+  for (const wk of WEEKS) {
+    if (wk.m !== lastMonth) {
+      lastMonth = wk.m;
+      html += `<tr><td colspan="5" style="background:${mColors[wk.m]}18;color:${mColors[wk.m]};
+        font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;padding:10px 14px;
+        border-bottom:1px solid ${mColors[wk.m]}44">
+        ── MONTH ${wk.m}: ${MONTHS[wk.m-1].title.toUpperCase()} ──
+      </td></tr>`;
+    }
+    for (const t of wk.tasks) {
+      const key = `${wk.w}_${t.scope}_${t.task.slice(0,20)}`;
+      if (!progressData[key]) progressData[key] = {status:'Not Started', notes:''};
+      const m = SCOPE_META[t.scope];
+      html += `<tr data-key="${key}" data-status="${progressData[key].status}">
+        <td style="font-family:'Space Mono',monospace;font-size:11px;color:var(--yellow)">W${wk.w}</td>
+        <td><span class="scope-tag" style="${scopeStyle(t.scope)}">${t.scope}</span></td>
+        <td style="color:#c0c0d8">${t.task}</td>
+        <td>
+          <select class="status-select" onchange="updateStatus('${key}', this.value)">
+            <option ${progressData[key].status==='Not Started'?'selected':''}>Not Started</option>
+            <option ${progressData[key].status==='In Progress'?'selected':''}>In Progress</option>
+            <option ${progressData[key].status==='Done'?'selected':''}>Done</option>
+            <option ${progressData[key].status==='Skipped'?'selected':''}>Skipped</option>
+          </select>
+        </td>
+        <td><input class="notes-input" placeholder="add notes..." value="${progressData[key].notes}"
+          onchange="updateNotes('${key}', this.value)"></td>
+      </tr>`;
+    }
+  }
+  tbody.innerHTML = html;
+  updateProgressCount();
+  styleSelects();
+}
+
+function styleSelects() {
+  document.querySelectorAll('.status-select').forEach(s => {
+    s.className = 'status-select';
+    if (s.value === 'Done') s.classList.add('done');
+    else if (s.value === 'In Progress') s.classList.add('progress');
+    else if (s.value === 'Skipped') s.classList.add('skipped');
+  });
+}
+
+function updateStatus(key, val) {
+  progressData[key].status = val;
+  const row = document.querySelector(`tr[data-key="${key}"]`);
+  if (row) row.dataset.status = val;
+  styleSelects();
+  updateProgressCount();
+}
+
+function updateNotes(key, val) {
+  progressData[key].notes = val;
+}
+
+function updateProgressCount() {
+  const done = Object.values(progressData).filter(x => x.status === 'Done').length;
+  const total = Object.keys(progressData).length;
+  document.getElementById('progressCount').innerHTML =
+    `<strong>${done}</strong> / ${total} tasks done`;
+}
+
+function filterProgress(status) {
+  document.querySelectorAll('#progressBody tr[data-key]').forEach(row => {
+    if (status === 'all' || row.dataset.status === status) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+function exportProgress() {
+  const blob = new Blob([JSON.stringify(progressData, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'de_roadmap_progress.json';
+  a.click();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FILTERING
+// ══════════════════════════════════════════════════════════════════
+let activeScopes = new Set(Object.keys(SCOPE_META));
+let activeMonth = 'all';
+
+function applyFilters() {
+  // Month filter
+  document.querySelectorAll('.month-section').forEach(sec => {
+    const m = sec.dataset.month;
+    sec.style.display = (activeMonth === 'all' || activeMonth === m) ? '' : 'none';
+  });
+  // Scope filter
+  document.querySelectorAll('.task-row').forEach(row => {
+    const s = row.dataset.scope;
+    row.classList.toggle('filtered-out', !activeScopes.has(s));
+  });
+}
+
+// Legend click
+document.getElementById('legend').addEventListener('click', e => {
+  const item = e.target.closest('.legend-item');
+  if (!item) return;
+  const scope = item.dataset.scope;
+  if (activeScopes.has(scope)) {
+    activeScopes.delete(scope);
+    item.classList.add('dimmed');
+  } else {
+    activeScopes.add(scope);
+    item.classList.remove('dimmed');
+  }
+  applyFilters();
+});
+
+// Month tabs
+document.getElementById('monthTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.tab');
+  if (!tab) return;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.remove('active');
+    t.style.borderBottomColor = 'transparent';
+  });
+  activeMonth = tab.dataset.month;
+  tab.classList.add('active');
+  const mColors = {1:'#42a5f5',2:'#29d9f5',3:'#ff7043',4:'#69d483',5:'#b06be8',6:'#ec407a'};
+  if (activeMonth !== 'all') {
+    tab.style.borderBottomColor = mColors[activeMonth];
+  } else {
+    tab.style.borderBottomColor = 'var(--yellow)';
+  }
+  applyFilters();
+});
+
+// Set active tab color for "All"
+document.querySelector('.tab[data-month="all"]').style.borderBottomColor = 'var(--yellow)';
+
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+renderRoadmap();
+renderTracker();
+renderProgress();
+</script>
+</body>
+</html>
